@@ -133,8 +133,7 @@ extern "C" {
 
 #if LV_USE_PRIVATE_API
 #include "src/lvgl_private.h"
-#endif
-
+#endif 
 
 /*********************
  *      DEFINES
