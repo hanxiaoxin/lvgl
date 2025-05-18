@@ -22,6 +22,15 @@
 #include "my_include.h"
 #endif
 
+#if defined(CONFIG_IDF_TARGET_ESP32C3)
+    #define ESP32C3
+#elif defined(CONFIG_IDF_TARGET_ESP32S3)
+    #define ESP32S3
+#else
+    #error "Unsupported target"
+#endif
+
+
 /*====================
    COLOR SETTINGS
  *====================*/
@@ -66,8 +75,6 @@
 #define LV_INTTYPES_INCLUDE     <inttypes.h>
 #define LV_LIMITS_INCLUDE       <limits.h>
 #define LV_STDARG_INCLUDE       <stdarg.h>
-
-#define LV_MEM_SIZE (6 * 1024 * 1024U)
 
 #if LV_USE_STDLIB_MALLOC == LV_STDLIB_BUILTIN
     /** Size of memory available for `lv_malloc()` in bytes (>= 2kB) */
@@ -442,7 +449,13 @@
  *  If size is not set to 0, the decoder will fail to decode when the cache is full.
  *  If size is 0, the cache function is not enabled and the decoded memory will be
  *  released immediately after use. */
+#ifdef ESP32S3
 #define LV_CACHE_DEF_SIZE       1024*1024*6
+#endif
+
+#ifdef ESP32C3
+#define LV_CACHE_DEF_SIZE       1024*160
+#endif
 
 /** Default number of image header cache entries. The cache is used to store the headers of images
  *  The main logic is like `LV_CACHE_DEF_SIZE` but for image headers. */
@@ -572,16 +585,27 @@
 
 /* Montserrat fonts with ASCII range and some symbols using bpp = 4
  * https://fonts.google.com/specimen/Montserrat */
+
+#ifdef ESP32S3
+#define LV_FONT_MONTSERRAT_18 1
+#define LV_FONT_MONTSERRAT_20 1
+#define LV_FONT_MONTSERRAT_24 1
+#define LV_FONT_MONTSERRAT_26 1
+#endif
+
+#ifdef ESP32C3
+#define LV_FONT_MONTSERRAT_18 0
+#define LV_FONT_MONTSERRAT_20 0
+#define LV_FONT_MONTSERRAT_24 0
+#define LV_FONT_MONTSERRAT_26 0
+#endif
+
 #define LV_FONT_MONTSERRAT_8  0
 #define LV_FONT_MONTSERRAT_10 0
 #define LV_FONT_MONTSERRAT_12 1
 #define LV_FONT_MONTSERRAT_14 1
 #define LV_FONT_MONTSERRAT_16 0
-#define LV_FONT_MONTSERRAT_18 1
-#define LV_FONT_MONTSERRAT_20 1
 #define LV_FONT_MONTSERRAT_22 0
-#define LV_FONT_MONTSERRAT_24 1
-#define LV_FONT_MONTSERRAT_26 1
 #define LV_FONT_MONTSERRAT_28 0
 #define LV_FONT_MONTSERRAT_30 0
 #define LV_FONT_MONTSERRAT_32 0
@@ -915,7 +939,11 @@
 #define LV_USE_GIF 1
 #if LV_USE_GIF
     /** GIF decoder accelerate */
+    #ifdef ESP32S3
     #define LV_GIF_CACHE_DECODE_DATA 1024*1024*6
+    #else
+    #define LV_GIF_CACHE_DECODE_DATA 0
+    #endif
 #endif
 
 
