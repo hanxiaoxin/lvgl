@@ -22,13 +22,12 @@
 #include "my_include.h"
 #endif
 
-#if defined(CONFIG_IDF_TARGET_ESP32C3)
-    #define ESP32C3
-#elif defined(CONFIG_IDF_TARGET_ESP32S3)
+#ifdef CONFIG_IDF_TARGET_ESP32S3
     #define ESP32S3
 #else
-    #error "Unsupported target"
+    #define ESP32C3
 #endif
+
 
 
 /*====================
@@ -371,7 +370,7 @@
      *  - LV_LOG_LEVEL_ERROR    Log only critical issues, when system may fail.
      *  - LV_LOG_LEVEL_USER     Log only custom log messages added by the user.
      *  - LV_LOG_LEVEL_NONE     Do not log anything. */
-    #define LV_LOG_LEVEL LV_LOG_LEVEL_WARN
+    #define LV_LOG_LEVEL LV_LOG_LEVEL_INFO
 
     /** - 1: Print log with 'printf';
      *  - 0: User needs to register a callback with `lv_log_register_print_cb()`. */
@@ -456,6 +455,7 @@
 #ifdef ESP32C3
 #define LV_CACHE_DEF_SIZE       1024*160
 #endif
+
 
 /** Default number of image header cache entries. The cache is used to store the headers of images
  *  The main logic is like `LV_CACHE_DEF_SIZE` but for image headers. */
@@ -597,12 +597,12 @@
 #endif
 
 #ifdef ESP32C3
-#define LV_FONT_MONTSERRAT_12 0
+#define LV_FONT_MONTSERRAT_12 1
 #define LV_FONT_MONTSERRAT_14 1
-#define LV_FONT_MONTSERRAT_18 0
-#define LV_FONT_MONTSERRAT_20 0
-#define LV_FONT_MONTSERRAT_24 0
-#define LV_FONT_MONTSERRAT_26 0
+#define LV_FONT_MONTSERRAT_18 1
+#define LV_FONT_MONTSERRAT_20 1
+#define LV_FONT_MONTSERRAT_24 1
+#define LV_FONT_MONTSERRAT_26 1
 #endif
 
 #define LV_FONT_MONTSERRAT_8  0
@@ -860,7 +860,12 @@
 #if LV_USE_FS_STDIO
     #define LV_FS_STDIO_LETTER 'S'     /**< Set an upper-case driver-identifier letter for this driver (e.g. 'A'). */
     #define LV_FS_STDIO_PATH "/spiffs"         /**< Set the working directory. File/directory paths will be appended to it. */
+    #ifdef ESP32S3
     #define LV_FS_STDIO_CACHE_SIZE 1024*128    /**< >0 to cache this number of bytes in lv_fs_read() */
+    #endif
+    #ifdef ESP32C3
+    #define LV_FS_STDIO_CACHE_SIZE 1024*12
+    #endif
 #endif
 
 /** API for open, read, etc. */
