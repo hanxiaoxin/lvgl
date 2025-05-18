@@ -568,11 +568,11 @@
 #define LV_ATTRIBUTE_EXTERN_DATA
 
 /** Use `float` as `lv_value_precise_t` */
-#define LV_USE_FLOAT            0
+#define LV_USE_FLOAT            1
 
 /** Enable matrix support
  *  - Requires `LV_USE_FLOAT = 1` */
-#define LV_USE_MATRIX           0
+#define LV_USE_MATRIX           1
 
 /** Include `lvgl_private.h` in `lvgl.h` to access internal data and functions by default */
 #ifndef LV_USE_PRIVATE_API
@@ -587,6 +587,9 @@
  * https://fonts.google.com/specimen/Montserrat */
 
 #ifdef ESP32S3
+#define LV_FONT_MONTSERRAT_12 1
+#define LV_FONT_MONTSERRAT_14 1
+#define LV_FONT_MONTSERRAT_16 1
 #define LV_FONT_MONTSERRAT_18 1
 #define LV_FONT_MONTSERRAT_20 1
 #define LV_FONT_MONTSERRAT_24 1
@@ -594,6 +597,8 @@
 #endif
 
 #ifdef ESP32C3
+#define LV_FONT_MONTSERRAT_12 0
+#define LV_FONT_MONTSERRAT_14 1
 #define LV_FONT_MONTSERRAT_18 0
 #define LV_FONT_MONTSERRAT_20 0
 #define LV_FONT_MONTSERRAT_24 0
@@ -602,9 +607,6 @@
 
 #define LV_FONT_MONTSERRAT_8  0
 #define LV_FONT_MONTSERRAT_10 0
-#define LV_FONT_MONTSERRAT_12 1
-#define LV_FONT_MONTSERRAT_14 1
-#define LV_FONT_MONTSERRAT_16 0
 #define LV_FONT_MONTSERRAT_22 0
 #define LV_FONT_MONTSERRAT_28 0
 #define LV_FONT_MONTSERRAT_30 0
@@ -983,7 +985,7 @@
 
 /** Enable Vector Graphic APIs
  *  - Requires `LV_USE_MATRIX = 1` */
-#define LV_USE_VECTOR_GRAPHIC  0
+#define LV_USE_VECTOR_GRAPHIC  1
 
 /** Enable ThorVG (vector graphics library) from the src/libs folder */
 #define LV_USE_THORVG_INTERNAL 0
@@ -1339,14 +1341,14 @@
 #define LV_USE_DEMO_WIDGETS 1
 
 /** Demonstrate usage of encoder and keyboard. */
-#define LV_USE_DEMO_KEYPAD_AND_ENCODER 0
+#define LV_USE_DEMO_KEYPAD_AND_ENCODER 1
 
 /** Benchmark your system */
 #define LV_USE_DEMO_BENCHMARK 1
 
 /** Render test for each primitive.
  *  - Requires at least 480x272 display. */
-#define LV_USE_DEMO_RENDER 0
+#define LV_USE_DEMO_RENDER 1
 
 /** Stress test for LVGL */
 #define LV_USE_DEMO_STRESS 1
@@ -1362,35 +1364,35 @@
 #endif
 
 /** Vector graphic demo */
-#define LV_USE_DEMO_VECTOR_GRAPHIC  0
+#define LV_USE_DEMO_VECTOR_GRAPHIC  1
 
 /*---------------------------
  * Demos from lvgl/lv_demos
   ---------------------------*/
 
 /** Flex layout demo */
-#define LV_USE_DEMO_FLEX_LAYOUT     0
+#define LV_USE_DEMO_FLEX_LAYOUT     1
 
 /** Smart-phone like multi-language demo */
-#define LV_USE_DEMO_MULTILANG       0
+#define LV_USE_DEMO_MULTILANG       1
 
 /** Widget transformation demo */
-#define LV_USE_DEMO_TRANSFORM       0
+#define LV_USE_DEMO_TRANSFORM       1
 
 /** Demonstrate scroll settings */
-#define LV_USE_DEMO_SCROLL          0
+#define LV_USE_DEMO_SCROLL          1
 
 /*E-bike demo with Lottie animations (if LV_USE_LOTTIE is enabled)*/
-#define LV_USE_DEMO_EBIKE           0
+#define LV_USE_DEMO_EBIKE           1
 #if LV_USE_DEMO_EBIKE
     #define LV_DEMO_EBIKE_PORTRAIT  0    /*0: for 480x270..480x320, 1: for 480x800..720x1280*/
 #endif
 
 /** High-resolution demo */
-#define LV_USE_DEMO_HIGH_RES        0
+#define LV_USE_DEMO_HIGH_RES        1
 
 /* Smart watch demo */
-#define LV_USE_DEMO_SMARTWATCH      0
+#define LV_USE_DEMO_SMARTWATCH      1
 
 /*--END OF LV_CONF_H--*/
 
