@@ -162,7 +162,7 @@
 /** Stack size of drawing thread.
  * NOTE: If FreeType or ThorVG is enabled, it is recommended to set it to 32KB or more.
  */
-#define LV_DRAW_THREAD_STACK_SIZE    (8 * 1024)         /**< [bytes]*/
+#define LV_DRAW_THREAD_STACK_SIZE    (32 * 1024)         /**< [bytes]*/
 
 #define LV_USE_DRAW_SW 1
 #if LV_USE_DRAW_SW == 1
@@ -223,7 +223,7 @@
     #endif
 
     /** Enable drawing complex gradients in software: linear at an angle, radial or conical */
-    #define LV_USE_DRAW_SW_COMPLEX_GRADIENTS    0
+    #define LV_USE_DRAW_SW_COMPLEX_GRADIENTS   1
 
 #endif
 
@@ -864,7 +864,7 @@
     #define LV_FS_STDIO_CACHE_SIZE 1024*128    /**< >0 to cache this number of bytes in lv_fs_read() */
     #endif
     #ifdef ESP32C3
-    #define LV_FS_STDIO_CACHE_SIZE 1024*12
+    #define LV_FS_STDIO_CACHE_SIZE 1024*512
     #endif
 #endif
 
