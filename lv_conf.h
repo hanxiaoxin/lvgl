@@ -449,7 +449,7 @@
  *  If size is 0, the cache function is not enabled and the decoded memory will be
  *  released immediately after use. */
 #ifdef ESP32S3
-#define LV_CACHE_DEF_SIZE       1024*1024*6
+#define LV_CACHE_DEF_SIZE       1024*1024*7
 #endif
 
 #ifdef ESP32C3
@@ -861,7 +861,7 @@
     #define LV_FS_STDIO_LETTER 'S'     /**< Set an upper-case driver-identifier letter for this driver (e.g. 'A'). */
     #define LV_FS_STDIO_PATH "/spiffs"         /**< Set the working directory. File/directory paths will be appended to it. */
     #ifdef ESP32S3
-    #define LV_FS_STDIO_CACHE_SIZE 1024*500    /**< >0 to cache this number of bytes in lv_fs_read() */
+    #define LV_FS_STDIO_CACHE_SIZE 1024*80   /**< >0 to cache this number of bytes in lv_fs_read() */
     #endif
     #ifdef ESP32C3
     #define LV_FS_STDIO_CACHE_SIZE 1024*512
@@ -947,7 +947,7 @@
 #if LV_USE_GIF
     /** GIF decoder accelerate */
     #ifdef ESP32S3
-    #define LV_GIF_CACHE_DECODE_DATA 1024*1024*6
+    #define LV_GIF_CACHE_DECODE_DATA LV_CACHE_DEF_SIZE
     #else
     #define LV_GIF_CACHE_DECODE_DATA 0
     #endif
