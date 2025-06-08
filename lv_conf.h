@@ -96,7 +96,7 @@
  *====================*/
 
 /** Default display refresh, input device read and animation step period. */
-#define LV_DEF_REFR_PERIOD  10      /**< [ms] */
+#define LV_DEF_REFR_PERIOD  5      /**< [ms] */
 
 /** Default Dots Per Inch. Used to initialize default sizes such as widgets sized, style paddings.
  * (Not so important, you can adjust it to modify default sizes and spaces.) */
@@ -115,7 +115,7 @@
  * - LV_OS_MQX
  * - LV_OS_SDL2
  * - LV_OS_CUSTOM */
-#define LV_USE_OS   LV_OS_NONE
+#define LV_USE_OS   LV_OS_FREERTOS
 
 #if LV_USE_OS == LV_OS_CUSTOM
     #define LV_OS_CUSTOM_INCLUDE <stdint.h>
@@ -370,7 +370,7 @@
      *  - LV_LOG_LEVEL_ERROR    Log only critical issues, when system may fail.
      *  - LV_LOG_LEVEL_USER     Log only custom log messages added by the user.
      *  - LV_LOG_LEVEL_NONE     Do not log anything. */
-    #define LV_LOG_LEVEL LV_LOG_LEVEL_INFO
+    #define LV_LOG_LEVEL LV_LOG_LEVEL_WARN
 
     /** - 1: Print log with 'printf';
      *  - 0: User needs to register a callback with `lv_log_register_print_cb()`. */
@@ -443,13 +443,16 @@
     #define LV_GLOBAL_CUSTOM_INCLUDE <stdint.h>
 #endif
 
+#define LV_MEM_SIZE (7 * 1024 * 1024U)
+#define LV_CACHE_SIZE LV_MEM_SIZE
+
 /** Default cache size in bytes.
  *  Used by image decoders such as `lv_lodepng` to keep the decoded image in memory.
  *  If size is not set to 0, the decoder will fail to decode when the cache is full.
  *  If size is 0, the cache function is not enabled and the decoded memory will be
  *  released immediately after use. */
 #ifdef ESP32S3
-#define LV_CACHE_DEF_SIZE       1024*1024*7
+#define LV_CACHE_DEF_SIZE      LV_CACHE_SIZE
 #endif
 
 #ifdef ESP32C3
@@ -592,8 +595,14 @@
 #define LV_FONT_MONTSERRAT_16 1
 #define LV_FONT_MONTSERRAT_18 1
 #define LV_FONT_MONTSERRAT_20 1
+#define LV_FONT_MONTSERRAT_22 1
 #define LV_FONT_MONTSERRAT_24 1
 #define LV_FONT_MONTSERRAT_26 1
+#define LV_FONT_MONTSERRAT_28 1
+#define LV_FONT_MONTSERRAT_30 1
+#define LV_FONT_MONTSERRAT_22 1
+#define LV_FONT_MONTSERRAT_24 1
+#define LV_FONT_MONTSERRAT_36 1
 #endif
 
 #ifdef ESP32C3
@@ -601,18 +610,18 @@
 #define LV_FONT_MONTSERRAT_14 1
 #define LV_FONT_MONTSERRAT_18 1
 #define LV_FONT_MONTSERRAT_20 1
+#define LV_FONT_MONTSERRAT_22 1
 #define LV_FONT_MONTSERRAT_24 1
 #define LV_FONT_MONTSERRAT_26 1
+#define LV_FONT_MONTSERRAT_28 1
+#define LV_FONT_MONTSERRAT_30 1
+#define LV_FONT_MONTSERRAT_22 1
+#define LV_FONT_MONTSERRAT_24 1
+#define LV_FONT_MONTSERRAT_36 1
 #endif
 
 #define LV_FONT_MONTSERRAT_8  0
 #define LV_FONT_MONTSERRAT_10 0
-#define LV_FONT_MONTSERRAT_22 0
-#define LV_FONT_MONTSERRAT_28 0
-#define LV_FONT_MONTSERRAT_30 0
-#define LV_FONT_MONTSERRAT_32 0
-#define LV_FONT_MONTSERRAT_34 0
-#define LV_FONT_MONTSERRAT_36 0
 #define LV_FONT_MONTSERRAT_38 0
 #define LV_FONT_MONTSERRAT_40 0
 #define LV_FONT_MONTSERRAT_42 0
@@ -861,10 +870,10 @@
     #define LV_FS_STDIO_LETTER 'S'     /**< Set an upper-case driver-identifier letter for this driver (e.g. 'A'). */
     #define LV_FS_STDIO_PATH "/spiffs"         /**< Set the working directory. File/directory paths will be appended to it. */
     #ifdef ESP32S3
-    #define LV_FS_STDIO_CACHE_SIZE 1024*80   /**< >0 to cache this number of bytes in lv_fs_read() */
+    #define LV_FS_STDIO_CACHE_SIZE 1024*512   /**< >0 to cache this number of bytes in lv_fs_read() */
     #endif
     #ifdef ESP32C3
-    #define LV_FS_STDIO_CACHE_SIZE 1024*512
+    #define LV_FS_STDIO_CACHE_SIZE 1024*256
     #endif
 #endif
 
@@ -1287,10 +1296,10 @@
 #endif
 
 /* Drivers for LCD devices connected via SPI/parallel port */
-#define LV_USE_ST7735        1
-#define LV_USE_ST7789        1
-#define LV_USE_ST7796        1
-#define LV_USE_ILI9341       1
+#define LV_USE_ST7735        0
+#define LV_USE_ST7789        0
+#define LV_USE_ST7796        0
+#define LV_USE_ILI9341       0
 #define LV_USE_FT81X         0
 
 #if (LV_USE_ST7735 | LV_USE_ST7789 | LV_USE_ST7796 | LV_USE_ILI9341)
