@@ -887,7 +887,7 @@
     #define LV_FS_STDIO_CACHE_SIZE 1024*512   /**< >0 to cache this number of bytes in lv_fs_read() */
     #endif
     #ifdef ESP32C3
-    #define LV_FS_STDIO_CACHE_SIZE 1024*256
+    #define LV_FS_STDIO_CACHE_SIZE 1024 * 10
     #endif
 #endif
 
