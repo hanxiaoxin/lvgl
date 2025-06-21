@@ -981,7 +981,9 @@ static lv_result_t decode_compressed(lv_image_decoder_t * decoder, lv_image_deco
         #ifdef CONFIG_USE_CARRAY
         #define LV_LENGTH_REST 0
         #else
-        #define LV_LENGTH_REST 12
+            #ifndef CONFIG_USE_CARRAY
+            #define LV_LENGTH_REST 12
+            #endif
         #endif
         if (compressed->compressed_size != compressed_len - LV_LENGTH_REST) {
           LV_LOG_WARN("Compressed size mismatch: %" LV_PRIu32 " != %" LV_PRIu32,
