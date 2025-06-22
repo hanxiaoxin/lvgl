@@ -455,7 +455,7 @@
 #endif
 
 #ifdef ESP32C3
-    #define LV_MEM_SIZE (1024 * 160)
+    #define LV_MEM_SIZE (1024 * 200)
 #endif
 
 #define LV_CACHE_DEF_SIZE  LV_MEM_SIZE
@@ -889,7 +889,7 @@
     #define LV_FS_STDIO_CACHE_SIZE 1024 * 512   /**< >0 to cache this number of bytes in lv_fs_read() */
     #endif
     #ifdef ESP32C3
-    #define LV_FS_STDIO_CACHE_SIZE 1024 * 60
+    #define LV_FS_STDIO_CACHE_SIZE 1024 * 15
     #endif
 #endif
 
