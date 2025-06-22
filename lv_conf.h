@@ -151,7 +151,7 @@
  * and can't be drawn in chunks. */
 
 /** The target buffer size for simple layer chunks. */
-#define LV_DRAW_LAYER_SIMPLE_BUF_SIZE    (64 * 1024)    /**< [bytes]*/
+#define LV_DRAW_LAYER_SIMPLE_BUF_SIZE    (32 * 1024)    /**< [bytes]*/
 
 /* Limit the max allocated memory for simple and transformed layers.
  * It should be at least `LV_DRAW_LAYER_SIMPLE_BUF_SIZE` sized but if transformed layers are also used
@@ -162,7 +162,7 @@
 /** Stack size of drawing thread.
  * NOTE: If FreeType or ThorVG is enabled, it is recommended to set it to 32KB or more.
  */
-#define LV_DRAW_THREAD_STACK_SIZE    (96 * 1024)         /**< [bytes]*/
+#define LV_DRAW_THREAD_STACK_SIZE    (64 * 1024)         /**< [bytes]*/
 
 #define LV_USE_DRAW_SW 1
 #if LV_USE_DRAW_SW == 1
@@ -455,7 +455,7 @@
 #endif
 
 #ifdef ESP32C3
-    #define LV_MEM_SIZE (1024 * 200)
+    #define LV_MEM_SIZE (1024 * 160)
 #endif
 
 #define LV_CACHE_DEF_SIZE  LV_MEM_SIZE
@@ -467,7 +467,7 @@
 #ifdef ESP32S3
 #define LV_IMAGE_HEADER_CACHE_DEF_CNT 100
 #else
-#define LV_IMAGE_HEADER_CACHE_DEF_CNT 2
+#define LV_IMAGE_HEADER_CACHE_DEF_CNT 4
 #endif
 
 /** Number of stops allowed per gradient. Increase this to allow more stops.
@@ -886,10 +886,14 @@
     #define LV_FS_STDIO_LETTER 'S'     /**< Set an upper-case driver-identifier letter for this driver (e.g. 'A'). */
     #define LV_FS_STDIO_PATH "/spiffs"         /**< Set the working directory. File/directory paths will be appended to it. */
     #ifdef ESP32S3
-    #define LV_FS_STDIO_CACHE_SIZE 1024 * 512   /**< >0 to cache this number of bytes in lv_fs_read() */
+        #define LV_FS_STDIO_CACHE_SIZE 1024 * 512   /**< >0 to cache this number of bytes in lv_fs_read() */
     #endif
     #ifdef ESP32C3
-    #define LV_FS_STDIO_CACHE_SIZE 1024 * 15
+        #ifdef CONFIG_USE_SPLIT_LITTLEFS
+            #define LV_FS_STDIO_CACHE_SIZE 1024 * 15
+        #else
+            #define LV_FS_STDIO_CACHE_SIZE 1024 * 40
+        #endif
     #endif
 #endif
 
