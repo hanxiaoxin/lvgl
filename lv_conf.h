@@ -96,7 +96,7 @@
  *====================*/
 
 /** Default display refresh, input device read and animation step period. */
-#define LV_DEF_REFR_PERIOD  5      /**< [ms] */
+#define LV_DEF_REFR_PERIOD  10      /**< [ms] */
 
 /** Default Dots Per Inch. Used to initialize default sizes such as widgets sized, style paddings.
  * (Not so important, you can adjust it to modify default sizes and spaces.) */
@@ -151,7 +151,7 @@
  * and can't be drawn in chunks. */
 
 /** The target buffer size for simple layer chunks. */
-#define LV_DRAW_LAYER_SIMPLE_BUF_SIZE    (32 * 1024)    /**< [bytes]*/
+#define LV_DRAW_LAYER_SIMPLE_BUF_SIZE    (8 * 1024)    /**< [bytes]*/
 
 /* Limit the max allocated memory for simple and transformed layers.
  * It should be at least `LV_DRAW_LAYER_SIMPLE_BUF_SIZE` sized but if transformed layers are also used
@@ -162,7 +162,7 @@
 /** Stack size of drawing thread.
  * NOTE: If FreeType or ThorVG is enabled, it is recommended to set it to 32KB or more.
  */
-#define LV_DRAW_THREAD_STACK_SIZE    (64 * 1024)         /**< [bytes]*/
+#define LV_DRAW_THREAD_STACK_SIZE    (32 * 1024)         /**< [bytes]*/
 
 #define LV_USE_DRAW_SW 1
 #if LV_USE_DRAW_SW == 1
@@ -181,7 +181,7 @@
     #define LV_DRAW_SW_SUPPORT_L8           1
     #define LV_DRAW_SW_SUPPORT_AL88         1
     #define LV_DRAW_SW_SUPPORT_A8           1
-    #define LV_DRAW_SW_SUPPORT_I1           1
+    #define LV_DRAW_SW_SUPPORT_I1           0
 
     /* The threshold of the luminance to consider a pixel as
      * active in indexed color format */
@@ -455,7 +455,7 @@
 #endif
 
 #ifdef ESP32C3
-    #define LV_MEM_SIZE (1024 * 160)
+    #define LV_MEM_SIZE (1024 * 110)
 #endif
 
 #define LV_CACHE_DEF_SIZE  LV_MEM_SIZE
@@ -467,7 +467,7 @@
 #ifdef ESP32S3
 #define LV_IMAGE_HEADER_CACHE_DEF_CNT 100
 #else
-#define LV_IMAGE_HEADER_CACHE_DEF_CNT 4
+#define LV_IMAGE_HEADER_CACHE_DEF_CNT 20
 #endif
 
 /** Number of stops allowed per gradient. Increase this to allow more stops.
@@ -890,7 +890,7 @@
     #endif
     #ifdef ESP32C3
         #ifdef CONFIG_USE_SPLIT_LITTLEFS
-            #define LV_FS_STDIO_CACHE_SIZE 1024 * 15
+            #define LV_FS_STDIO_CACHE_SIZE 1024 * 30
         #else
             #define LV_FS_STDIO_CACHE_SIZE 1024 * 40
         #endif
