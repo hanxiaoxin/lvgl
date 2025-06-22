@@ -151,7 +151,7 @@
  * and can't be drawn in chunks. */
 
 /** The target buffer size for simple layer chunks. */
-#define LV_DRAW_LAYER_SIMPLE_BUF_SIZE    (200 * 1024)    /**< [bytes]*/
+#define LV_DRAW_LAYER_SIMPLE_BUF_SIZE    (64 * 1024)    /**< [bytes]*/
 
 /* Limit the max allocated memory for simple and transformed layers.
  * It should be at least `LV_DRAW_LAYER_SIMPLE_BUF_SIZE` sized but if transformed layers are also used
@@ -162,7 +162,7 @@
 /** Stack size of drawing thread.
  * NOTE: If FreeType or ThorVG is enabled, it is recommended to set it to 32KB or more.
  */
-#define LV_DRAW_THREAD_STACK_SIZE    (64 * 1024)         /**< [bytes]*/
+#define LV_DRAW_THREAD_STACK_SIZE    (96 * 1024)         /**< [bytes]*/
 
 #define LV_USE_DRAW_SW 1
 #if LV_USE_DRAW_SW == 1
@@ -443,8 +443,7 @@
     #define LV_GLOBAL_CUSTOM_INCLUDE <stdint.h>
 #endif
 
-#define LV_MEM_SIZE (7 * 1024 * 1024U)
-#define LV_CACHE_SIZE LV_MEM_SIZE
+
 
 /** Default cache size in bytes.
  *  Used by image decoders such as `lv_lodepng` to keep the decoded image in memory.
@@ -452,14 +451,15 @@
  *  If size is 0, the cache function is not enabled and the decoded memory will be
  *  released immediately after use. */
 #ifdef ESP32S3
-    #define LV_CACHE_DEF_SIZE      LV_CACHE_SIZE
+    #define LV_MEM_SIZE (7 * 1024 * 1024U)
 #endif
 
 #ifdef ESP32C3
-    #ifndef LV_CACHE_DEF_SIZE
-        #define LV_CACHE_DEF_SIZE       1024*160
-    #endif
+    #define LV_MEM_SIZE (1024 * 160)
 #endif
+
+#define LV_CACHE_DEF_SIZE  LV_MEM_SIZE
+#define LV_CACHE_SIZE LV_MEM_SIZE
 
 
 /** Default number of image header cache entries. The cache is used to store the headers of images
@@ -886,10 +886,10 @@
     #define LV_FS_STDIO_LETTER 'S'     /**< Set an upper-case driver-identifier letter for this driver (e.g. 'A'). */
     #define LV_FS_STDIO_PATH "/spiffs"         /**< Set the working directory. File/directory paths will be appended to it. */
     #ifdef ESP32S3
-    #define LV_FS_STDIO_CACHE_SIZE 1024*512   /**< >0 to cache this number of bytes in lv_fs_read() */
+    #define LV_FS_STDIO_CACHE_SIZE 1024 * 512   /**< >0 to cache this number of bytes in lv_fs_read() */
     #endif
     #ifdef ESP32C3
-    #define LV_FS_STDIO_CACHE_SIZE 1024 * 10
+    #define LV_FS_STDIO_CACHE_SIZE 1024 * 60
     #endif
 #endif
 
