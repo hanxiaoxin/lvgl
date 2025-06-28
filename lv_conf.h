@@ -151,7 +151,7 @@
  * and can't be drawn in chunks. */
 
 /** The target buffer size for simple layer chunks. */
-#define LV_DRAW_LAYER_SIMPLE_BUF_SIZE    (8 * 1024)    /**< [bytes]*/
+#define LV_DRAW_LAYER_SIMPLE_BUF_SIZE    (64 * 1024)    /**< [bytes]*/
 
 /* Limit the max allocated memory for simple and transformed layers.
  * It should be at least `LV_DRAW_LAYER_SIMPLE_BUF_SIZE` sized but if transformed layers are also used
@@ -162,7 +162,7 @@
 /** Stack size of drawing thread.
  * NOTE: If FreeType or ThorVG is enabled, it is recommended to set it to 32KB or more.
  */
-#define LV_DRAW_THREAD_STACK_SIZE    (32 * 1024)         /**< [bytes]*/
+#define LV_DRAW_THREAD_STACK_SIZE    (128 * 1024)         /**< [bytes]*/
 
 #define LV_USE_DRAW_SW 1
 #if LV_USE_DRAW_SW == 1
@@ -465,7 +465,7 @@
 /** Default number of image header cache entries. The cache is used to store the headers of images
  *  The main logic is like `LV_CACHE_DEF_SIZE` but for image headers. */
 #ifdef ESP32S3
-#define LV_IMAGE_HEADER_CACHE_DEF_CNT 100
+#define LV_IMAGE_HEADER_CACHE_DEF_CNT 200
 #else
 #define LV_IMAGE_HEADER_CACHE_DEF_CNT 20
 #endif
@@ -885,16 +885,7 @@
 #if LV_USE_FS_STDIO
     #define LV_FS_STDIO_LETTER 'S'     /**< Set an upper-case driver-identifier letter for this driver (e.g. 'A'). */
     #define LV_FS_STDIO_PATH "/spiffs"         /**< Set the working directory. File/directory paths will be appended to it. */
-    #ifdef ESP32S3
-        #define LV_FS_STDIO_CACHE_SIZE 1024 * 512   /**< >0 to cache this number of bytes in lv_fs_read() */
-    #endif
-    #ifdef ESP32C3
-        #ifdef CONFIG_USE_SPLIT_LITTLEFS
-            #define LV_FS_STDIO_CACHE_SIZE 1024 * 30
-        #else
-            #define LV_FS_STDIO_CACHE_SIZE 1024 * 40
-        #endif
-    #endif
+    #define LV_FS_STDIO_CACHE_SIZE 1024 * 400   /**< >0 to cache this number of bytes in lv_fs_read() */
 #endif
 
 /** API for open, read, etc. */
@@ -984,7 +975,7 @@
 
 
 /** Decode bin images to RAM */
-#define LV_BIN_DECODER_RAM_LOAD 0
+#define LV_BIN_DECODER_RAM_LOAD 1
 
 /** RLE decompress library */
 #define LV_USE_RLE 1
@@ -1375,14 +1366,14 @@
 #define LV_USE_DEMO_WIDGETS 1
 
 /** Demonstrate usage of encoder and keyboard. */
-#define LV_USE_DEMO_KEYPAD_AND_ENCODER 1
+#define LV_USE_DEMO_KEYPAD_AND_ENCODER 0
 
 /** Benchmark your system */
 #define LV_USE_DEMO_BENCHMARK 1
 
 /** Render test for each primitive.
  *  - Requires at least 480x272 display. */
-#define LV_USE_DEMO_RENDER 1
+#define LV_USE_DEMO_RENDER 0
 
 /** Stress test for LVGL */
 #define LV_USE_DEMO_STRESS 1
@@ -1398,26 +1389,26 @@
 #endif
 
 /** Vector graphic demo */
-#define LV_USE_DEMO_VECTOR_GRAPHIC  1
+#define LV_USE_DEMO_VECTOR_GRAPHIC  0
 
 /*---------------------------
  * Demos from lvgl/lv_demos
   ---------------------------*/
 
 /** Flex layout demo */
-#define LV_USE_DEMO_FLEX_LAYOUT     1
+#define LV_USE_DEMO_FLEX_LAYOUT     0
 
 /** Smart-phone like multi-language demo */
-#define LV_USE_DEMO_MULTILANG       1
+#define LV_USE_DEMO_MULTILANG       0
 
 /** Widget transformation demo */
-#define LV_USE_DEMO_TRANSFORM       1
+#define LV_USE_DEMO_TRANSFORM       0
 
 /** Demonstrate scroll settings */
-#define LV_USE_DEMO_SCROLL          1
+#define LV_USE_DEMO_SCROLL          0
 
 /*E-bike demo with Lottie animations (if LV_USE_LOTTIE is enabled)*/
-#define LV_USE_DEMO_EBIKE           1
+#define LV_USE_DEMO_EBIKE           0
 #if LV_USE_DEMO_EBIKE
     #define LV_DEMO_EBIKE_PORTRAIT  0    /*0: for 480x270..480x320, 1: for 480x800..720x1280*/
 #endif
@@ -1426,7 +1417,7 @@
 #define LV_USE_DEMO_HIGH_RES        0
 
 /* Smart watch demo */
-#define LV_USE_DEMO_SMARTWATCH      1
+#define LV_USE_DEMO_SMARTWATCH      0
 
 /*--END OF LV_CONF_H--*/
 
