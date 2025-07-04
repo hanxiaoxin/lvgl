@@ -885,7 +885,11 @@
 #if LV_USE_FS_STDIO
     #define LV_FS_STDIO_LETTER 'S'     /**< Set an upper-case driver-identifier letter for this driver (e.g. 'A'). */
     #define LV_FS_STDIO_PATH "/spiffs"         /**< Set the working directory. File/directory paths will be appended to it. */
-    #define LV_FS_STDIO_CACHE_SIZE 1024 * 400   /**< >0 to cache this number of bytes in lv_fs_read() */
+    #ifdef CONFIG_IDF_TARGET_ESP32S3
+        #define LV_FS_STDIO_CACHE_SIZE 1024 * 400   /**< >0 to cache this number of bytes in lv_fs_read() */
+    #else
+        #define LV_FS_STDIO_CACHE_SIZE 1024 * 20   /**< >0 to cache this number of bytes in lv_fs_read() */
+    #endif
 #endif
 
 /** API for open, read, etc. */
