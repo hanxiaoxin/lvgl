@@ -991,9 +991,15 @@ static lv_result_t decode_compressed(lv_image_decoder_t * decoder, lv_image_deco
         compressed_len -= len;
         lv_memcpy(compressed, image->data, len);
         compressed->data = image->data + len;
-        if(compressed->compressed_size != compressed_len) {
-            LV_LOG_WARN("Compressed size mismatch: %" LV_PRIu32" != %" LV_PRIu32, compressed->compressed_size, compressed_len);
-            return LV_RESULT_INVALID;
+        #ifdef CONFIG_USE_CARRAY
+            #define LV_LENGTH_REST 0
+        #else
+            #define LV_LENGTH_REST 12
+        #endif
+        if (compressed->compressed_size != compressed_len - LV_LENGTH_REST) {
+          LV_LOG_WARN("Compressed size mismatch: %" LV_PRIu32 " != %" LV_PRIu32,
+                      compressed->compressed_size, compressed_len);
+          return LV_RESULT_INVALID;
         }
     }
     else {
@@ -1177,7 +1183,6 @@ static lv_result_t decompress_image(lv_image_decoder_dsc_t * dsc, const lv_image
 #if LV_USE_LZ4
         const char * input = (const char *)compressed->data;
         char * output = (char *)img_data;
-
         int ret = LZ4_decompress_safe(input, output, (int)input_len, (int)out_len);
         if(ret >= 0) {
             /* Cast is safe because of the above check */
