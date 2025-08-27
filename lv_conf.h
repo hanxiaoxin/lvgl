@@ -91,6 +91,8 @@
     #endif
 #endif  /*LV_USE_STDLIB_MALLOC == LV_STDLIB_BUILTIN*/
 
+
+
 /*====================
    HAL SETTINGS
  *====================*/
@@ -450,16 +452,14 @@
  *  If size is not set to 0, the decoder will fail to decode when the cache is full.
  *  If size is 0, the cache function is not enabled and the decoded memory will be
  *  released immediately after use. */
+// Cache size for image decoders - using SPIRAM for large cache
 #ifdef ESP32S3
-    #define LV_MEM_SIZE (7 * 1024 * 1024U)
+    #define LV_CACHE_DEF_SIZE (8 * 1024 * 900U)
+#else
+    #define LV_CACHE_DEF_SIZE (1024 * 110)
 #endif
 
-#ifdef ESP32C3
-    #define LV_MEM_SIZE (1024 * 110)
-#endif
-
-#define LV_CACHE_DEF_SIZE  LV_MEM_SIZE
-#define LV_CACHE_SIZE LV_MEM_SIZE
+#define LV_CACHE_SIZE LV_CACHE_DEF_SIZE
 
 
 /** Default number of image header cache entries. The cache is used to store the headers of images
@@ -886,9 +886,9 @@
     #define LV_FS_STDIO_LETTER 'S'     /**< Set an upper-case driver-identifier letter for this driver (e.g. 'A'). */
     #define LV_FS_STDIO_PATH "/spiffs"         /**< Set the working directory. File/directory paths will be appended to it. */
     #ifdef CONFIG_IDF_TARGET_ESP32S3
-        #define LV_FS_STDIO_CACHE_SIZE 1024 * 400   /**< >0 to cache this number of bytes in lv_fs_read() */
+        #define LV_FS_STDIO_CACHE_SIZE 1024 * 1024   /**< 1MB文件系统缓存 */
     #else
-        #define LV_FS_STDIO_CACHE_SIZE 1024 * 20   /**< >0 to cache this number of bytes in lv_fs_read() */
+        #define LV_FS_STDIO_CACHE_SIZE 1024 * 64   /**< 64KB文件系统缓存 */
     #endif
 #endif
 
