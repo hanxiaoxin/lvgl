@@ -25,10 +25,10 @@
 #define LV_STDLIB_RTTHREAD          3
 #define LV_STDLIB_CUSTOM            255
 
-#define LV_DRAW_SW_ASM_NONE         0
-#define LV_DRAW_SW_ASM_NEON         1
-#define LV_DRAW_SW_ASM_HELIUM       2
-#define LV_DRAW_SW_ASM_CUSTOM       255
+#define LV_DRAW_SW_ASM_NONE             0
+#define LV_DRAW_SW_ASM_NEON             1
+#define LV_DRAW_SW_ASM_HELIUM           2
+#define LV_DRAW_SW_ASM_CUSTOM           255
 
 #define LV_NEMA_HAL_CUSTOM          0
 #define LV_NEMA_HAL_STM32           1
@@ -959,6 +959,24 @@
             #define LV_VG_LITE_STROKE_CACHE_CNT 32
         #endif
     #endif
+
+    /** Remove VLC_OP_CLOSE path instruction (Workaround for NXP) **/
+    #ifndef LV_VG_LITE_DISABLE_VLC_OP_CLOSE
+        #ifdef CONFIG_LV_VG_LITE_DISABLE_VLC_OP_CLOSE
+            #define LV_VG_LITE_DISABLE_VLC_OP_CLOSE CONFIG_LV_VG_LITE_DISABLE_VLC_OP_CLOSE
+        #else
+            #define LV_VG_LITE_DISABLE_VLC_OP_CLOSE 0
+        #endif
+    #endif
+
+    /** Disable linear gradient extension for some older versions of drivers. */
+    #ifndef LV_VG_LITE_DISABLE_LINEAR_GRADIENT_EXT
+        #ifdef CONFIG_LV_VG_LITE_DISABLE_LINEAR_GRADIENT_EXT
+            #define LV_VG_LITE_DISABLE_LINEAR_GRADIENT_EXT CONFIG_LV_VG_LITE_DISABLE_LINEAR_GRADIENT_EXT
+        #else
+            #define LV_VG_LITE_DISABLE_LINEAR_GRADIENT_EXT 0
+        #endif
+    #endif
 #endif
 
 /** Accelerate blends, fills, etc. with STM32 DMA2D */
@@ -1017,6 +1035,27 @@
         #endif
     #endif
 #endif
+
+/* Use EVE FT81X GPU. */
+#ifndef LV_USE_DRAW_EVE
+    #ifdef CONFIG_LV_USE_DRAW_EVE
+        #define LV_USE_DRAW_EVE CONFIG_LV_USE_DRAW_EVE
+    #else
+        #define LV_USE_DRAW_EVE 0
+    #endif
+#endif
+
+#if LV_USE_DRAW_EVE
+    /* EVE_GEN value: 2, 3, or 4 */
+    #ifndef LV_DRAW_EVE_EVE_GENERATION
+        #ifdef CONFIG_LV_DRAW_EVE_EVE_GENERATION
+            #define LV_DRAW_EVE_EVE_GENERATION CONFIG_LV_DRAW_EVE_EVE_GENERATION
+        #else
+            #define LV_DRAW_EVE_EVE_GENERATION 4
+        #endif
+    #endif
+#endif
+
 /*=======================
  * FEATURE CONFIGURATION
  *=======================*/
@@ -1509,6 +1548,15 @@
     #endif
 #endif
 
+/* Enable usage of the LVGL's vg_lite spec driver */
+#ifndef LV_USE_VG_LITE_DRIVER
+    #ifdef CONFIG_LV_USE_VG_LITE_DRIVER
+        #define LV_USE_VG_LITE_DRIVER CONFIG_LV_USE_VG_LITE_DRIVER
+    #else
+        #define LV_USE_VG_LITE_DRIVER  0
+    #endif
+#endif
+
 /* Enable the multi-touch gesture recognition feature */
 /* Gesture recognition requires the use of floats */
 #ifndef LV_USE_GESTURE_RECOGNITION
@@ -1830,20 +1878,6 @@
         #define LV_FONT_DEJAVU_16_PERSIAN_HEBREW CONFIG_LV_FONT_DEJAVU_16_PERSIAN_HEBREW
     #else
         #define LV_FONT_DEJAVU_16_PERSIAN_HEBREW    0  /**< Hebrew, Arabic, Persian letters and all their forms */
-    #endif
-#endif
-#ifndef LV_FONT_SIMSUN_14_CJK
-    #ifdef CONFIG_LV_FONT_SIMSUN_14_CJK
-        #define LV_FONT_SIMSUN_14_CJK CONFIG_LV_FONT_SIMSUN_14_CJK
-    #else
-        #define LV_FONT_SIMSUN_14_CJK               0  /**< 1000 most common CJK radicals */
-    #endif
-#endif
-#ifndef LV_FONT_SIMSUN_16_CJK
-    #ifdef CONFIG_LV_FONT_SIMSUN_16_CJK
-        #define LV_FONT_SIMSUN_16_CJK CONFIG_LV_FONT_SIMSUN_16_CJK
-    #else
-        #define LV_FONT_SIMSUN_16_CJK               0  /**< 1000 most common CJK radicals */
     #endif
 #endif
 #ifndef LV_FONT_SOURCE_HAN_SANS_SC_14_CJK
@@ -3112,6 +3146,15 @@
     #endif
 #endif
 
+/** Requires `LV_USE_3DTEXTURE = 1` */
+#ifndef LV_USE_GLTF
+    #ifdef CONFIG_LV_USE_GLTF
+        #define LV_USE_GLTF CONFIG_LV_USE_GLTF
+    #else
+        #define LV_USE_GLTF  0
+    #endif
+#endif
+
 /** Enable Vector Graphic APIs
  *  - Requires `LV_USE_MATRIX = 1` */
 #ifndef LV_USE_VECTOR_GRAPHIC
@@ -4091,6 +4134,25 @@
             #define LV_USE_NUTTX_MOUSE_MOVE_STEP    1
         #endif
     #endif
+
+    /*NuttX trace file and its path*/
+    #ifndef LV_USE_NUTTX_TRACE_FILE
+        #ifdef CONFIG_LV_USE_NUTTX_TRACE_FILE
+            #define LV_USE_NUTTX_TRACE_FILE CONFIG_LV_USE_NUTTX_TRACE_FILE
+        #else
+            #define LV_USE_NUTTX_TRACE_FILE 0
+        #endif
+    #endif
+    #if LV_USE_NUTTX_TRACE_FILE
+        #ifndef LV_NUTTX_TRACE_FILE_PATH
+            #ifdef CONFIG_LV_NUTTX_TRACE_FILE_PATH
+                #define LV_NUTTX_TRACE_FILE_PATH CONFIG_LV_NUTTX_TRACE_FILE_PATH
+            #else
+                #define LV_NUTTX_TRACE_FILE_PATH "/data/lvgl-trace.log"
+            #endif
+        #endif
+    #endif
+
 #endif
 
 /** Driver for /dev/dri/card */
@@ -4491,6 +4553,15 @@
             #define LV_USE_DEMO_VECTOR_GRAPHIC CONFIG_LV_USE_DEMO_VECTOR_GRAPHIC
         #else
             #define LV_USE_DEMO_VECTOR_GRAPHIC  0
+        #endif
+    #endif
+
+    /** GLTF demo */
+    #ifndef LV_USE_DEMO_GLTF
+        #ifdef CONFIG_LV_USE_DEMO_GLTF
+            #define LV_USE_DEMO_GLTF CONFIG_LV_USE_DEMO_GLTF
+        #else
+            #define LV_USE_DEMO_GLTF            0
         #endif
     #endif
 

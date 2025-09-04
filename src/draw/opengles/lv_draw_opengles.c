@@ -130,17 +130,22 @@ void lv_draw_opengles_deinit(void)
 
 static bool opengles_texture_cache_create_cb(cache_data_t * cached_data, void * user_data)
 {
-    return draw_to_texture((lv_draw_opengles_unit_t *)user_data, cached_data);
+    LV_PROFILER_DRAW_BEGIN;
+    bool ret = draw_to_texture((lv_draw_opengles_unit_t *)user_data, cached_data);
+    LV_PROFILER_DRAW_END;
+    return ret;
 }
 
 static void opengles_texture_cache_free_cb(cache_data_t * cached_data, void * user_data)
 {
     LV_UNUSED(user_data);
+    LV_PROFILER_DRAW_BEGIN;
 
     lv_free(cached_data->draw_dsc);
     GL_CALL(glDeleteTextures(1, &cached_data->texture));
     cached_data->draw_dsc = NULL;
     cached_data->texture = 0;
+    LV_PROFILER_DRAW_END;
 }
 
 static lv_cache_compare_res_t opengles_texture_cache_compare_cb(const cache_data_t * lhs, const cache_data_t * rhs)
@@ -210,7 +215,7 @@ static int32_t dispatch(lv_draw_unit_t * draw_unit, lv_layer_t * layer)
 
     execute_drawing(draw_opengles_unit);
 
-    draw_opengles_unit->task_act->state = LV_DRAW_TASK_STATE_READY;
+    draw_opengles_unit->task_act->state = LV_DRAW_TASK_STATE_FINISHED;
     draw_opengles_unit->task_act = NULL;
 
     /*The draw unit is free now. Request a new dispatching as it can get a new task*/
@@ -240,6 +245,7 @@ static int32_t evaluate(lv_draw_unit_t * draw_unit, lv_draw_task_t * task)
 
 static bool draw_to_texture(lv_draw_opengles_unit_t * u, cache_data_t * cache_data)
 {
+    LV_PROFILER_DRAW_BEGIN;
     lv_draw_task_t * task = u->task_act;
 
     lv_layer_t dest_layer;
@@ -361,6 +367,7 @@ static bool draw_to_texture(lv_draw_opengles_unit_t * u, cache_data_t * cache_da
         default:
             /*The malloced cache_data->draw_dsc will be freed automatically on failure
             *in opengles_texture_cache_free_cb*/
+            LV_PROFILER_DRAW_END;
             return false;
     }
 
@@ -381,11 +388,13 @@ static bool draw_to_texture(lv_draw_opengles_unit_t * u, cache_data_t * cache_da
         lv_obj_set_flag(obj, LV_OBJ_FLAG_SEND_DRAW_TASK_EVENTS, original_send_draw_task_event);
     }
 
+    LV_PROFILER_DRAW_END;
     return true;
 }
 
 static void blend_texture_layer(lv_draw_task_t * t)
 {
+    LV_PROFILER_DRAW_BEGIN;
     lv_draw_image_dsc_t * draw_dsc = t->draw_dsc;
     lv_draw_opengles_unit_t * u = (lv_draw_opengles_unit_t *)t->draw_unit;
     lv_area_t area;
@@ -416,21 +425,37 @@ static void blend_texture_layer(lv_draw_task_t * t)
 
     lv_opengles_viewport(0, 0, targ_tex_w, targ_tex_h);
     // TODO rotation
-    lv_opengles_render_texture(src_texture, &area, draw_dsc->opa, targ_tex_w, targ_tex_h, &t->clip_area, false);
+    bool h_flip = false;
+    bool v_flip = false;
+    if(t->type == LV_DRAW_TASK_TYPE_3D) {
+        lv_draw_3d_dsc_t * _3d_dsc = (lv_draw_3d_dsc_t *)t->draw_dsc;
+        h_flip = _3d_dsc->h_flip;
+        v_flip = _3d_dsc->v_flip;
+    }
+    lv_opengles_render_texture(src_texture, &area, draw_dsc->opa, targ_tex_w, targ_tex_h, &t->clip_area, h_flip,
+                               v_flip);
 
     GL_CALL(glBindFramebuffer(GL_FRAMEBUFFER, 0));
 
 
     GL_CALL(glBindTexture(GL_TEXTURE_2D, 0));
     GL_CALL(glDeleteTextures(1, &src_texture));
+    LV_PROFILER_DRAW_END;
 }
 
 static void draw_from_cached_texture(lv_draw_task_t * t)
 {
+    LV_PROFILER_DRAW_BEGIN;
     lv_draw_opengles_unit_t * u = (lv_draw_opengles_unit_t *)t->draw_unit;
     cache_data_t data_to_find;
     data_to_find.draw_dsc = (lv_draw_dsc_base_t *)t->draw_dsc;
-
+    bool h_flip = false;
+    bool v_flip = false;
+    if(t->type == LV_DRAW_TASK_TYPE_3D) {
+        lv_draw_3d_dsc_t * _3d_dsc = (lv_draw_3d_dsc_t *)t->draw_dsc;
+        h_flip = _3d_dsc->h_flip;
+        v_flip = _3d_dsc->v_flip;
+    }
     data_to_find.w = lv_area_get_width(&t->_real_area);
     data_to_find.h = lv_area_get_height(&t->_real_area);
     data_to_find.texture = 0;
@@ -478,6 +503,7 @@ static void draw_from_cached_texture(lv_draw_task_t * t)
     lv_area_move(&t->_real_area, a.x1, a.y1);
 
     if(!entry_cached) {
+        LV_PROFILER_DRAW_END;
         return;
     }
 
@@ -503,7 +529,7 @@ static void draw_from_cached_texture(lv_draw_task_t * t)
     lv_area_move(&t->clip_area, -dest_layer->buf_area.x1, -dest_layer->buf_area.y1);
     lv_area_t render_area = t->_real_area;
     lv_area_move(&render_area, -dest_layer->buf_area.x1, -dest_layer->buf_area.y1);
-    lv_opengles_render_texture(texture, &render_area, 0xff, targ_tex_w, targ_tex_h, &t->clip_area, true);
+    lv_opengles_render_texture(texture, &render_area, 0xff, targ_tex_w, targ_tex_h, &t->clip_area, h_flip, v_flip);
 
     GL_CALL(glBindFramebuffer(GL_FRAMEBUFFER, 0));
 
@@ -517,6 +543,7 @@ static void draw_from_cached_texture(lv_draw_task_t * t)
             lv_cache_drop(u->texture_cache, &data_to_find, u);
         }
     }
+    LV_PROFILER_DRAW_END;
 }
 
 static void execute_drawing(lv_draw_opengles_unit_t * u)
@@ -580,6 +607,7 @@ static unsigned int get_framebuffer(lv_draw_opengles_unit_t * u)
 
 static unsigned int create_texture(int32_t w, int32_t h, const void * data)
 {
+    LV_PROFILER_DRAW_BEGIN;
     unsigned int texture;
 
     GL_CALL(glGenTextures(1, &texture));
@@ -600,12 +628,14 @@ static unsigned int create_texture(int32_t w, int32_t h, const void * data)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
+    LV_PROFILER_DRAW_END;
     return texture;
 }
 
 #if LV_USE_3DTEXTURE
 static void lv_draw_opengles_3d(lv_draw_task_t * t, const lv_draw_3d_dsc_t * dsc, const lv_area_t * coords)
 {
+    LV_PROFILER_DRAW_BEGIN;
     lv_draw_opengles_unit_t * u = (lv_draw_opengles_unit_t *) t->draw_unit;
 
     lv_layer_t * dest_layer = t->target_layer;
@@ -624,10 +654,12 @@ static void lv_draw_opengles_3d(lv_draw_task_t * t, const lv_draw_3d_dsc_t * dsc
     lv_area_t clip_area = t->clip_area;
     lv_area_move(&clip_area, -dest_layer->buf_area.x1, -dest_layer->buf_area.y1);
 
-    lv_opengles_render_texture(dsc->tex_id, coords, dsc->opa, targ_tex_w, targ_tex_h, &clip_area, true);
+    lv_opengles_render_texture(dsc->tex_id, coords, dsc->opa, targ_tex_w, targ_tex_h, &clip_area, dsc->h_flip,
+                               !dsc->v_flip);
 
     GL_CALL(glBindFramebuffer(GL_FRAMEBUFFER, 0));
     GL_CALL(glBindTexture(GL_TEXTURE_2D, 0));
+    LV_PROFILER_DRAW_END;
 }
 #endif /*LV_USE_3DTEXTURE*/
 
